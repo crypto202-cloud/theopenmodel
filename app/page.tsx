@@ -1,89 +1,66 @@
-import Link from "next/link";
-import { LEAGUES } from "@/lib/data";
-import { upcomingFixtures } from "@/lib/fixtures";
-import { matchProb } from "@/lib/model";
-import { MatchExplorer, type MatchExplorerMatch } from "./components/MatchExplorer";
-import { TodayPortal } from "./components/TodayPortal";
-import { LiveTicker } from "./components/LiveTicker";
-import { CountUp } from "./components/CountUp";
-import { NewsletterSignup } from "./components/NewsletterSignup";
-import { SeasonRaces } from "./components/SeasonRaces";
-
-function explainFixture(home: string, homeElo: number, away: string, awayElo: number) {
-  const gap = Math.round(Math.abs(homeElo - awayElo));
-  if (gap < 30) {
-    return `${home} and ${away} have performed at a similar level. Playing at home gives ${home} a small advantage.`;
-  }
-  if (homeElo > awayElo) {
-    return `${home} has produced stronger results and is also playing at home.`;
-  }
-  return `${away} has produced stronger results, even after allowing for ${home} playing at home.`;
-}
-
 export default function Home() {
-  const fixturePool = upcomingFixtures(180);
-  const challengeFixtures = LEAGUES
-    .map((league) => fixturePool.find((fixture) => fixture.league.slug === league.slug))
-    .filter((fixture): fixture is NonNullable<typeof fixture> => Boolean(fixture))
-    .slice(0, 4);
+  return (
+    <div>
+      <p className="text-bk-text-muted mb-4 text-sm">
+        Match predictions from BK NEXUS for the biggest fixtures.
+      </p>
 
-  const explorerMatches: MatchExplorerMatch[] = challengeFixtures.map((fixture) => ({
-    slug: fixture.slug,
-    date: fixture.date,
-    league: fixture.league.name,
-    home: fixture.home.club,
-    homeLogo: fixture.home.logo,
-    away: fixture.away.club,
-    awayLogo: fixture.away.logo,
-    probabilities: matchProb(fixture.home.elo, fixture.away.elo),
-    explanation: explainFixture(fixture.home.club, fixture.home.elo, fixture.away.club, fixture.away.elo),
-  }));
+      <h2 className="text-bk-neon text-xl font-bold mb-4 tracking-wide">NEXT MATCHES</h2>
 
-  const predictionLab = (
-    <div className="portal-section portal-prediction-lab" id="live" data-reveal>
-      <div className="portal-prediction-marker">
-        <p>Compare your pick with the model before opening the full forecast.</p>
-        <Link href="/guide/">How the model works <b aria-hidden>→</b></Link>
+      {/* MATCH CARD START */}
+      <div className="bg-bk-card rounded-2xl p-5 border border-gray-700 shadow-lg mb-6">
+        
+        {/* Time Pill */}
+        <div className="bg-bk-neon text-black font-bold px-3 py-1 rounded-md inline-block text-xs mb-4">
+          TOMORROW 19:45
+        </div>
+
+        {/* Teams Row */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center font-bold text-xs text-white">AR</div>
+            <span className="font-bold text-lg text-white tracking-wide">ARSENAL</span>
+          </div>
+          <span className="text-bk-text-muted font-bold text-sm">VS</span>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-lg text-white tracking-wide">TOTTENHAM</span>
+            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center font-bold text-xs text-black">TH</div>
+          </div>
+        </div>
+
+        <p className="text-bk-text-muted text-xs mb-4">Premier League • Tottenham Hotspur Stadium</p>
+
+        <hr className="border-gray-700 mb-4" />
+
+        {/* Prediction Header */}
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-bk-neon font-bold text-sm tracking-wide">BK NEXUS prediction</span>
+          <span className="bg-bk-neon text-black text-xs font-bold px-3 py-1 rounded-full">High confidence</span>
+        </div>
+
+        {/* Probability Bar */}
+        <div className="flex h-2.5 rounded-full overflow-hidden mb-2">
+          <div className="bg-bk-neon" style={{ width: '46%' }}></div>
+          <div className="bg-bk-gray" style={{ width: '24%' }}></div>
+          <div className="bg-bk-red" style={{ width: '30%' }}></div>
+        </div>
+
+        {/* Probability Text */}
+        <div className="flex justify-between text-xs font-semibold text-bk-text-muted mb-5">
+          <span>Arsenal <strong className="text-white">46%</strong></span>
+          <span>Draw <strong className="text-white">24%</strong></span>
+          <span>Spurs <strong className="text-white">30%</strong></span>
+        </div>
+
+        {/* Predicted Score Pill */}
+        <div className="flex justify-between items-center">
+          <span className="text-bk-text-muted text-sm">Predicted score</span>
+          <span className="border border-bk-neon border-dashed text-bk-neon text-xs font-bold px-4 py-1 rounded-full">Coming soon</span>
+        </div>
+
       </div>
-      <MatchExplorer matches={explorerMatches} />
+      {/* MATCH CARD END */}
+
     </div>
   );
-
-  return (
-    <main className="home-page portal-page portal-page-home">
-      <TodayPortal predictionSlot={predictionLab} tickerSlot={<LiveTicker fixtures={fixturePool.slice(0, 12)} />} />
-
-      <SeasonRaces />
-
-      <section className="record-stage" data-reveal>
-        <div className="record-grid wrap">
-          <div className="record-copy">
-            <h2>Every forecast stays on the record.</h2>
-            <p>
-              The model&apos;s top outcome matched the final result in 70 of 102 completed World Cup matches through 15 July 2026. Every call was published before kickoff.
-            </p>
-            <div className="record-actions">
-              <Link href="/record/" className="signal-button">View the public record <span aria-hidden>→</span></Link>
-              <Link href="/methodology/" className="text-action">How forecasts are checked <span aria-hidden>→</span></Link>
-            </div>
-          </div>
-          <dl className="record-facts">
-            <div>
-              <dt>Top outcome matched</dt>
-              <dd><strong className="tnum"><CountUp end={70} duration={1000} /> of 102</strong><span>completed matches</span></dd>
-            </div>
-            <div>
-              <dt>How misses are counted</dt>
-              <dd><span>A draw counts as a miss when a team was the top pick.</span></dd>
-            </div>
-          </dl>
-        </div>
-        <p className="record-note wrap">Forecast published before kickoff. Final result checked. Correct and incorrect calls kept.</p>
-      </section>
-
-      <section className="wrap" style={{ margin: "36px auto 8px" }}>
-        <NewsletterSignup source="home" />
-      </section>
-    </main>
-  );
-}
+        }
