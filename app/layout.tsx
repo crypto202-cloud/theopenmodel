@@ -19,10 +19,6 @@ const SNAPSHOT_LABEL = LATEST_SNAPSHOT
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
-  // The old title led with news, matches and predictions — three things done better
-  // elsewhere, which invited a comparison against live-score apps and bookmakers that this
-  // site loses on both counts. It now leads with the question nothing free has answered
-  // since FiveThirtyEight's model stopped in 2023.
   title: {
     default: "BK•NEXUS",
     template: "%s | BK•NEXUS",
@@ -44,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="wrap inner">
             <Link href="/" className="brand">
               <span className="mark" aria-hidden><i /><i /></span>
-              <span className="word">The Open Model</span>
+              <span className="word">BK•NEXUS</span>
             </Link>
             <MainNav
               snapshotHref={LATEST_SNAPSHOT ? `/snapshot/${LATEST_SNAPSHOT}/` : undefined}
@@ -61,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="site">
           <div className="wrap cols">
             <div>
-              <Link href="/" className="footer-brand">The Open Model<span>.</span></Link>
+              <Link href="/" className="footer-brand">BK•NEXUS<span>.</span></Link>
               <p style={{ margin: "0 0 10px", maxWidth: 430 }}>
                 Predictions are published before kickoff and checked after full time. Correct and
                 incorrect results both remain visible.
