@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   // site loses on both counts. It now leads with the question nothing free has answered
   // since FiveThirtyEight's model stopped in 2023.
   title: {
-    default: "The Open Model: how will your club's season end?",
-    template: "%s | The Open Model",
+    default: "BK•NEXUS",
+    template: "%s | BK•NEXUS",
   },
   description:
     "Title, top-four and relegation chances for every club in Europe's top five leagues, resimulated every day. Free, open-source, and every forecast we have ever published is scored in public — including the wrong ones.",
