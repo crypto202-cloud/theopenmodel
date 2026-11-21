@@ -1,102 +1,57 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Barlow_Condensed, IBM_Plex_Mono } from "next/font/google";
-import { ScrollFx } from "./components/ScrollFx";
-import { MainNav } from "./components/MainNav";
-import { snapshotDates } from "@/lib/snapshots";
-import "./globals.css";
+import './globals.css'
+import { Inter } from 'next/font/google'
 
-const plex = IBM_Plex_Mono({ weight: ["400", "600"], subsets: ["latin"], variable: "--font-plex", display: "swap" });
-const barlow = Barlow_Condensed({ weight: ["500", "600", "700"], subsets: ["latin"], variable: "--font-barlow", display: "swap" });
+const inter = Inter({ subsets: ['latin'] })
 
-const SITE = "https://theopenmodel.com";
-const UMAMI_WEBSITE_ID = "c4e2f8fe-d2eb-40a6-9566-da53ca89f14b";
-const LATEST_SNAPSHOT = snapshotDates()[0];
-const SNAPSHOT_LABEL = LATEST_SNAPSHOT
-  ? new Intl.DateTimeFormat("en", { month: "short", day: "numeric", timeZone: "UTC" })
-      .format(new Date(`${LATEST_SNAPSHOT}T00:00:00Z`))
-  : null;
+export const metadata = {
+  title: 'BK NEXUS',
+  description: 'Football Predictions & Live Scores',
+}
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE),
-  title: {
-    default: "BK•NEXUS",
-    template: "%s | BK•NEXUS",
-  },
-  description:
-    "Title, top-four and relegation chances for every club in Europe's top five leagues, resimulated every day. Free, open-source, and every forecast we have ever published is scored in public — including the wrong ones.",
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en" className={`${plex.variable} ${barlow.variable}`}>
-      <body>
-        {process.env.NODE_ENV === "production" && (
-          <script defer src="/stats.js" data-website-id={UMAMI_WEBSITE_ID} />
-        )}
-        <ScrollFx />
-        <a className="skip-link" href="#main-content">Skip to content</a>
-        <header className="site">
-          <div className="wrap inner">
-            <Link href="/" className="brand">
-              <span className="mark" aria-hidden><i /><i /></span>
-              <span className="word">BK•NEXUS</span>
-            </Link>
-            <MainNav
-              snapshotHref={LATEST_SNAPSHOT ? `/snapshot/${LATEST_SNAPSHOT}/` : undefined}
-              snapshotLabel={SNAPSHOT_LABEL ?? undefined}
-            />
-            {LATEST_SNAPSHOT && SNAPSHOT_LABEL && (
-              <Link className="header-model-status" href={`/snapshot/${LATEST_SNAPSHOT}/`}>
-                <span>Forecast saved</span><time dateTime={LATEST_SNAPSHOT}>{SNAPSHOT_LABEL}</time>
-              </Link>
-            )}
+    <html lang="en">
+      <body className={`${inter.className} bg-bk-bg text-white min-h-screen pb-20`}>
+        
+        {/* TOP HEADER */}
+        <header className="pt-6 px-4 pb-4">
+          {/* Logo */}
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <span className="text-yellow-400 text-3xl">⚡</span>
+            <h1 className="text-bk-neon text-3xl font-extrabold tracking-wider">BK NEXUS</h1>
+          </div>
+
+          {/* Top Tabs (Live, Fixtures, News) */}
+          <div className="flex justify-between items-center bg-[#1a1c3b] rounded-lg p-1 text-sm font-semibold">
+            <button className="flex-1 py-2 text-bk-neon border-b-2 border-bk-neon">LIVE</button>
+            <button className="flex-1 py-2 text-bk-text-muted">FIXTURES</button>
+            <button className="flex-1 py-2 text-bk-text-muted">NEWS</button>
           </div>
         </header>
-        <div id="main-content" tabIndex={-1}>{children}</div>
-        <footer className="site">
-          <div className="wrap cols">
-            <div>
-              <Link href="/" className="footer-brand">BK•NEXUS<span>.</span></Link>
-              <p style={{ margin: "0 0 10px", maxWidth: 430 }}>
-                Predictions are published before kickoff and checked after full time. Correct and
-                incorrect results both remain visible.
-              </p>
-              <p style={{ margin: 0, fontSize: 12.5, color: "var(--muted)" }}>
-                Football statistical forecasts only; not betting or financial advice. Data sources and update times are shown where relevant.
-              </p>
-            </div>
-            <div>
-              <h4>Explore</h4>
-              <ul>
-                <li><Link href="/">Today&apos;s football</Link></li>
-                <li><Link href="/matches/">Match predictions</Link></li>
-                <li><Link href="/leagues/">Leagues</Link></li>
-                <li><Link href="/news/">Football news</Link></li>
-                <li><Link href="/tools/">Football tools</Link></li>
-                <li><Link href="/tools/scenario/">What-if season simulator</Link></li>
-                <li><Link href="/clearest-calls/">Most confident predictions</Link></li>
-                <li><Link href="/movers/">Teams getting stronger or weaker</Link></li>
-                <li><Link href="/snapshots/">Saved daily forecasts</Link></li>
-                <li><Link href="/data/">Download data (CSV/JSON)</Link></li>
-                <li><Link href="/guide/">How predictions work</Link></li>
-                <li><Link href="/record/">Past predictions and results</Link></li>
-                <li><Link href="/methodology/">Technical methodology</Link></li>
-                <li><Link href="/about/">About</Link></li>
-                <li><Link href="/privacy/">Privacy &amp; analytics</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4>Follow &amp; inspect</h4>
-              <ul>
-                <li><a href="https://github.com/Hicruben/world-cup-2026-prediction-model">GitHub (open source)</a></li>
-                <li><a href="https://t.me/world26ai">Telegram</a></li>
-                <li><Link href="/world-cup-2026/">World Cup 2026 archive</Link></li>
-              </ul>
-            </div>
-          </div>
-        </footer>
+
+        {/* MAIN CONTENT AREA */}
+        <main className="px-4">
+          {children}
+        </main>
+
+        {/* BOTTOM NAVIGATION BAR */}
+        <nav className="fixed bottom-0 w-full bg-[#0a0b1c] border-t border-gray-800 flex justify-around items-center py-3 text-xs font-semibold text-bk-text-muted">
+          <button className="text-bk-neon flex flex-col items-center gap-1">
+             <span className="w-2 h-2 rounded-full bg-bk-neon mb-1"></span>
+             Live
+          </button>
+          <button className="flex flex-col items-center gap-1">Fixtures</button>
+          <button className="flex flex-col items-center gap-1">Predictions</button>
+          <button className="flex flex-col items-center gap-1">News</button>
+          <button className="flex flex-col items-center gap-1">Stats</button>
+          <button className="flex flex-col items-center gap-1">Profile</button>
+        </nav>
+
       </body>
     </html>
-  );
-}
+  )
+          }
